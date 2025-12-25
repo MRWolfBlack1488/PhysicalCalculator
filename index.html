@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="yandex-verification" content="9431e211e995db2d" />
+    <title>Физический калькулятор - 10 класс</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .physics-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .section-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 25px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-color: #1a2a6c;
+        }
+        
+        .section-card.active {
+            border-color: #fdbb2d;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        }
+        
+        .section-card h3 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .section-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .section-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .section-tab {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .section-tab.active {
+            background: white;
+            color: #1a2a6c;
+        }
+        
+        .section-tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .calculator-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .formula-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        h2 {
+            color: #1a2a6c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #fdbb2d;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a2a6c;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus, input:focus {
+            border-color: #1a2a6c;
+            outline: none;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        button {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #1a2a6c;
+        }
+        
+        .formula-display {
+            font-size: 1.5rem;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .formula-variations {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 8px;
+            border-left: 3px solid #1a2a6c;
+        }
+        
+        .formula-variation {
+            margin: 8px 0;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .formula-explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        
+        .examples {
+            margin-top: 30px;
+        }
+        
+        .example-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .example-item:hover {
+            background: #e9ecef;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .support {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .support a {
+            color: #fdbb2d;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+        
+        .support a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .physics-sections {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .support {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Физический калькулятор - 10 класс</h1>
+            <p class="subtitle">Полный набор формул школьной программы по физике</p>
+        </header>
+        
+        <!-- КАРТОЧКИ РАЗДЕЛОВ ФИЗИКИ -->
+        <div class="physics-sections">
+            <div class="section-card active" data-section="mechanics">
+                <h3>📐 Механика</h3>
+                <p>Кинематика, динамика, статика, законы сохранения</p>
+            </div>
+            <div class="section-card" data-section="molecular">
+                <h3>🔥 Молекулярная физика</h3>
+                <p>МКТ, термодинамика, газовые законы</p>
+            </div>
+            <div class="section-card" data-section="electrodynamics">
+                <h3>⚡ Электродинамика</h3>
+                <p>Электростатика, постоянный ток, магнетизм</p>
+            </div>
+        </div>
+        
+        <div class="section-tabs">
+            <button class="section-tab active" data-section="mechanics">Механика</button>
+            <button class="section-tab" data-section="molecular">Молекулярная физика</button>
+            <button class="section-tab" data-section="electrodynamics">Электродинамика</button>
+        </div>
+        
+        <div class="main-content">
+            <section class="calculator-section">
+                <h2>Калькулятор</h2>
+                
+                <div class="form-group">
+                    <label for="formula-select">Выберите физическую формулу:</label>
+                    <select id="formula-select">
+                        <option value="">-- Выберите формулу --</option>
+                    </select>
+                </div>
+                
+                <div id="input-fields">
+                    <!-- Динамически генерируемые поля ввода -->
+                </div>
+                
+                <div id="unknown-field" style="display: none;">
+                    <div class="form-group">
+                        <label>Выберите неизвестную переменную для вычисления:</label>
+                        <div id="unknown-options">
+                            <!-- Динамически генерируемые checkbox -->
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="calculate-btn">Вычислить</button>
+                
+                <div class="result" id="result">
+                    Результат появится здесь после вычисления
+                </div>
+            </section>
+            
+            <section class="formula-section">
+                <h2>Вывод формулы</h2>
+                
+                <div class="formula-display" id="formula-display">
+                    Формула будет отображена здесь
+                </div>
+                
+                <div class="formula-variations" id="formula-variations">
+                    <!-- Вариации формулы будут здесь -->
+                </div>
+                
+                <div class="formula-explanation" id="formula-explanation">
+                    Объяснение формулы появится здесь
+                </div>
+                
+                <div class="examples">
+                    <h3>Примеры использования:</h3>
+                    <div id="examples-container">
+                        <!-- Примеры будут добавлены динамически -->
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <div class="footer-content">
+                <p>© 2025 Физический калькулятор</p>
+                <div class="support">
+                    Поддержка: 
+                    <a href="https://t.me/ThisWolfblack" target="_blank">@ThisWolfblack</a>; 
+                    <a href="https://t.me/Solenie1" target="_blank">@Solenie1</a>; 
+                    <a href="https://t.me/Nyashk77" target="_blank">@Nyashk77</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Ждем полной загрузки DOM перед запуском скрипта
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM загружен, инициализируем калькулятор...');
+            
+            // ОБЪЕКТ С ДАННЫМИ О ФОРМУЛАХ (ПОЛНЫЙ НАБОР ДЛЯ 10 КЛАССА)
+            const formulas = {
+                // ============ МЕХАНИКА ============
+                
+                // 1. Кинематика
+                uniform_motion: {
+                    name: "Равномерное движение (путь)",
+                    formula: "S = v × t",
+                    variations: ["S = v × t", "v = S / t", "t = S / v"],
+                    variables: {
+                        S: { name: "Путь", unit: "м", description: "Пройденный путь" },
+                        v: { name: "Скорость", unit: "м/с", description: "Постоянная скорость" },
+                        t: { name: "Время", unit: "с", description: "Время движения" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'S') return vars.v * vars.t;
+                        if (unknown === 'v') return vars.S / vars.t;
+                        if (unknown === 't') return vars.S / vars.v;
+                        return null;
+                    },
+                    explanation: "Формула для равномерного прямолинейного движения."
+                },
+                
+                velocity_accelerated: {
+                    name: "Скорость при равноускоренном движении",
+                    formula: "v = v₀ + a × t",
+                    variations: ["v = v₀ + a × t", "v₀ = v - a × t", "a = (v - v₀) / t", "t = (v - v₀) / a"],
+                    variables: {
+                        v: { name: "Конечная скорость", unit: "м/с", description: "Скорость в конце промежутка времени" },
+                        v0: { name: "Начальная скорость", unit: "м/с", description: "Скорость в начальный момент" },
+                        a: { name: "Ускорение", unit: "м/с²", description: "Постоянное ускорение" },
+                        t: { name: "Время", unit: "с", description: "Время движения" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'v') return vars.v0 + vars.a * vars.t;
+                        if (unknown === 'v0') return vars.v - vars.a * vars.t;
+                        if (unknown === 'a') return (vars.v - vars.v0) / vars.t;
+                        if (unknown === 't') return (vars.v - vars.v0) / vars.a;
+                        return null;
+                    },
+                    explanation: "Скорость при равноускоренном движении с постоянным ускорением."
+                },
+                
+                path_accelerated: {
+                    name: "Путь при равноускоренном движении",
+                    formula: "S = v₀ × t + (a × t²) / 2",
+                    variations: ["S = v₀ × t + (a × t²)/2", "v₀ = (S - (a × t²)/2) / t"],
+                    variables: {
+                        S: { name: "Путь", unit: "м", description: "Пройденный путь" },
+                        v0: { name: "Начальная скорость", unit: "м/с", description: "Начальная скорость" },
+                        a: { name: "Ускорение", unit: "м/с²", description: "Ускорение" },
+                        t: { name: "Время", unit: "с", description: "Время движения" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'S') return vars.v0 * vars.t + (vars.a * vars.t * vars.t) / 2;
+                        if (unknown === 'v0') return (vars.S - (vars.a * vars.t * vars.t) / 2) / vars.t;
+                        return null;
+                    },
+                    explanation: "Путь, пройденный телом при равноускоренном движении."
+                },
+                
+                // 2. Динамика
+                newton2: {
+                    name: "Второй закон Ньютона",
+                    formula: "F = m × a",
+                    variations: ["F = m × a", "m = F / a", "a = F / m"],
+                    variables: {
+                        F: { name: "Сила", unit: "Н", description: "Результирующая сила" },
+                        m: { name: "Масса", unit: "кг", description: "Масса тела" },
+                        a: { name: "Ускорение", unit: "м/с²", description: "Ускорение тела" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'F') return vars.m * vars.a;
+                        if (unknown === 'm') return vars.F / vars.a;
+                        if (unknown === 'a') return vars.F / vars.m;
+                        return null;
+                    },
+                    explanation: "Второй закон Ньютона: ускорение тела пропорционально равнодействующей силе."
+                },
+                
+                friction_force: {
+                    name: "Сила трения скольжения",
+                    formula: "Fтр = μ × N",
+                    variations: ["Fтр = μ × N", "μ = Fтр / N", "N = Fтр / μ"],
+                    variables: {
+                        Fтр: { name: "Сила трения", unit: "Н", description: "Сила трения скольжения" },
+                        μ: { name: "Коэффициент трения", unit: "", description: "Коэффициент трения скольжения" },
+                        N: { name: "Сила реакции опоры", unit: "Н", description: "Сила нормальной реакции опоры" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'Fтр') return vars.μ * vars.N;
+                        if (unknown === 'μ') return vars.Fтр / vars.N;
+                        if (unknown === 'N') return vars.Fтр / vars.μ;
+                        return null;
+                    },
+                    explanation: "Сила трения скольжения. Равна произведению коэффициента трения на силу нормальной реакции."
+                },
+                
+                hooke_law: {
+                    name: "Закон Гука",
+                    formula: "Fупр = k × x",
+                    variations: ["Fупр = k × x", "k = Fупр / x", "x = Fупр / k"],
+                    variables: {
+                        Fупр: { name: "Сила упругости", unit: "Н", description: "Сила упругости пружины" },
+                        k: { name: "Жёсткость пружины", unit: "Н/м", description: "Коэффициент жёсткости" },
+                        x: { name: "Деформация", unit: "м", description: "Абсолютное удлинение пружины" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'Fупр') return vars.k * vars.x;
+                        if (unknown === 'k') return vars.Fупр / vars.x;
+                        if (unknown === 'x') return vars.Fупр / vars.k;
+                        return null;
+                    },
+                    explanation: "Закон Гука: сила упругости пропорциональна деформации."
+                },
+                
+                // 3. Законы сохранения
+                kinetic_energy: {
+                    name: "Кинетическая энергия",
+                    formula: "Eк = (m × v²) / 2",
+                    variations: ["Eк = (m × v²) / 2", "m = 2Eк / v²", "v = √(2Eк / m)"],
+                    variables: {
+                        Eк: { name: "Кинетическая энергия", unit: "Дж", description: "Энергия движения тела" },
+                        m: { name: "Масса", unit: "кг", description: "Масса тела" },
+                        v: { name: "Скорость", unit: "м/с", description: "Скорость тела" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'Eк') return 0.5 * vars.m * vars.v * vars.v;
+                        if (unknown === 'm') return (2 * vars.Eк) / (vars.v * vars.v);
+                        if (unknown === 'v') return Math.sqrt((2 * vars.Eк) / vars.m);
+                        return null;
+                    },
+                    explanation: "Кинетическая энергия движущегося тела."
+                },
+                
+                potential_energy: {
+                    name: "Потенциальная энергия в поле тяжести",
+                    formula: "Eп = m × g × h",
+                    variations: ["Eп = m × g × h", "m = Eп / (g × h)", "h = Eп / (m × g)"],
+                    variables: {
+                        Eп: { name: "Потенциальная энергия", unit: "Дж", description: "Потенциальная энергия тела" },
+                        m: { name: "Масса", unit: "кг", description: "Масса тела" },
+                        g: { name: "Ускорение свободного падения", unit: "м/с²", description: "Ускорение свободного падения", value: 9.8 },
+                        h: { name: "Высота", unit: "м", description: "Высота над нулевым уровнем" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'Eп') return vars.m * vars.g * vars.h;
+                        if (unknown === 'm') return vars.Eп / (vars.g * vars.h);
+                        if (unknown === 'h') return vars.Eп / (vars.m * vars.g);
+                        return null;
+                    },
+                    explanation: "Потенциальная энергия тела в поле тяжести Земли."
+                },
+                
+                spring_energy: {
+                    name: "Потенциальная энергия пружины",
+                    formula: "Eп = (k × x²) / 2",
+                    variations: ["Eп = (k × x²) / 2", "k = 2Eп / x²", "x = √(2Eп / k)"],
+                    variables: {
+                        Eп: { name: "Потенциальная энергия", unit: "Дж", description: "Потенциальная энергия упругой деформации" },
+                        k: { name: "Жёсткость пружины", unit: "Н/м", description: "Коэффициент жёсткости" },
+                        x: { name: "Деформация", unit: "м", description: "Абсолютное удлинение пружины" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'Eп') return 0.5 * vars.k * vars.x * vars.x;
+                        if (unknown === 'k') return (2 * vars.Eп) / (vars.x * vars.x);
+                        if (unknown === 'x') return Math.sqrt((2 * vars.Eп) / vars.k);
+                        return null;
+                    },
+                    explanation: "Потенциальная энергия упруго деформированной пружины."
+                },
+                
+                momentum: {
+                    name: "Импульс тела",
+                    formula: "p = m × v",
+                    variations: ["p = m × v", "m = p / v", "v = p / m"],
+                    variables: {
+                        p: { name: "Импульс", unit: "кг·м/с", description: "Импульс (количество движения) тела" },
+                        m: { name: "Масса", unit: "кг", description: "Масса тела" },
+                        v: { name: "Скорость", unit: "м/с", description: "Скорость тела" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'p') return vars.m * vars.v;
+                        if (unknown === 'm') return vars.p / vars.v;
+                        if (unknown === 'v') return vars.p / vars.m;
+                        return null;
+                    },
+                    explanation: "Импульс тела (количество движения)."
+                },
+                
+                work: {
+                    name: "Работа силы",
+                    formula: "A = F × S × cos(α)",
+                    variations: ["A = F × S × cos(α)", "F = A / (S × cos(α))", "S = A / (F × cos(α))"],
+                    variables: {
+                        A: { name: "Работа", unit: "Дж", description: "Работа силы" },
+                        F: { name: "Сила", unit: "Н", description: "Сила, совершающая работу" },
+                        S: { name: "Перемещение", unit: "м", description: "Перемещение тела" },
+                        α: { name: "Угол между F и S", unit: "град", description: "Угол между направлением силы и перемещением" }
+                    },
+                    calculate: function(vars, unknown) {
+                        const cosAlpha = Math.cos(vars.α * Math.PI / 180);
+                        if (unknown === 'A') return vars.F * vars.S * cosAlpha;
+                        if (unknown === 'F') return vars.A / (vars.S * cosAlpha);
+                        if (unknown === 'S') return vars.A / (vars.F * cosAlpha);
+                        return null;
+                    },
+                    explanation: "Работа постоянной силы. α - угол между направлением силы и перемещением."
+                },
+                
+                power: {
+                    name: "Мощность",
+                    formula: "P = A / t",
+                    variations: ["P = A / t", "A = P × t", "t = A / P"],
+                    variables: {
+                        P: { name: "Мощность", unit: "Вт", description: "Мощность" },
+                        A: { name: "Работа", unit: "Дж", description: "Совершённая работа" },
+                        t: { name: "Время", unit: "с", description: "Время выполнения работы" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'P') return vars.A / vars.t;
+                        if (unknown === 'A') return vars.P * vars.t;
+                        if (unknown === 't') return vars.A / vars.P;
+                        return null;
+                    },
+                    explanation: "Мощность - работа, совершённая в единицу времени."
+                },
+                
+                // ============ МОЛЕКУЛЯРНАЯ ФИЗИКА ============
+                
+                // 1. Основы МКТ
+                amount_substance: {
+                    name: "Количество вещества",
+                    formula: "ν = N / Nₐ",
+                    variations: ["ν = N / Nₐ", "N = ν × Nₐ"],
+                    variables: {
+                        ν: { name: "Количество вещества", unit: "моль", description: "Количество вещества" },
+                        N: { name: "Число молекул", unit: "", description: "Число молекул в системе" },
+                        Nₐ: { name: "Постоянная Авогадро", unit: "1/моль", description: "Постоянная Авогадро", value: 6.022e23 }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'ν') return vars.N / vars.Nₐ;
+                        if (unknown === 'N') return vars.ν * vars.Nₐ;
+                        return null;
+                    },
+                    explanation: "Количество вещества через число молекул и постоянную Авогадро."
+                },
+                
+                amount_from_mass: {
+                    name: "Количество вещества через массу",
+                    formula: "ν = m / M",
+                    variations: ["ν = m / M", "m = ν × M", "M = m / ν"],
+                    variables: {
+                        ν: { name: "Количество вещества", unit: "моль", description: "Количество вещества" },
+                        m: { name: "Масса", unit: "кг", description: "Масса вещества" },
+                        M: { name: "Молярная масса", unit: "кг/моль", description: "Молярная масса вещества" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'ν') return vars.m / vars.M;
+                        if (unknown === 'm') return vars.ν * vars.M;
+                        if (unknown === 'M') return vars.m / vars.ν;
+                        return null;
+                    },
+                    explanation: "Количество вещества через массу и молярную массу."
+                },
+                
+                // 2. Уравнение состояния
+                mendeleev_clapeyron: {
+                    name: "Уравнение Менделеева-Клапейрона",
+                    formula: "p × V = ν × R × T",
+                    variations: ["p × V = ν × R × T", "p = (ν × R × T) / V", "V = (ν × R × T) / p", "T = (p × V) / (ν × R)"],
+                    variables: {
+                        p: { name: "Давление", unit: "Па", description: "Давление газа" },
+                        V: { name: "Объём", unit: "м³", description: "Объём газа" },
+                        ν: { name: "Количество вещества", unit: "моль", description: "Количество вещества газа" },
+                        R: { name: "Универсальная газовая постоянная", unit: "Дж/(моль·К)", description: "Универсальная газовая постоянная", value: 8.314 },
+                        T: { name: "Температура", unit: "К", description: "Абсолютная температура в Кельвинах" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'p') return (vars.ν * vars.R * vars.T) / vars.V;
+                        if (unknown === 'V') return (vars.ν * vars.R * vars.T) / vars.p;
+                        if (unknown === 'T') return (vars.p * vars.V) / (vars.ν * vars.R);
+                        return null;
+                    },
+                    explanation: "Уравнение состояния идеального газа (уравнение Клапейрона)."
+                },
+                
+                // 3. Газовые законы
+                boyle_marriott: {
+                    name: "Закон Бойля-Мариотта (изотерма)",
+                    formula: "p₁ × V₁ = p₂ × V₂",
+                    variations: ["p₁ × V₁ = p₂ × V₂", "p₂ = (p₁ × V₁) / V₂", "V₂ = (p₁ × V₁) / p₂"],
+                    variables: {
+                        p1: { name: "Давление начальное", unit: "Па", description: "Начальное давление газа" },
+                        V1: { name: "Объём начальный", unit: "м³", description: "Начальный объём газа" },
+                        p2: { name: "Давление конечное", unit: "Па", description: "Конечное давление газа" },
+                        V2: { name: "Объём конечный", unit: "м³", description: "Конечный объём газа" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'p2') return (vars.p1 * vars.V1) / vars.V2;
+                        if (unknown === 'V2') return (vars.p1 * vars.V1) / vars.p2;
+                        return null;
+                    },
+                    explanation: "Закон Бойля-Мариотта: для данной массы газа при постоянной температуре произведение давления на объём постоянно."
+                },
+                
+                // 4. Термодинамика
+                first_law_thermodynamics: {
+                    name: "Первое начало термодинамики",
+                    formula: "ΔU = Q - A",
+                    variations: ["ΔU = Q - A", "Q = ΔU + A", "A = Q - ΔU"],
+                    variables: {
+                        ΔU: { name: "Изменение внутренней энергии", unit: "Дж", description: "Изменение внутренней энергии системы" },
+                        Q: { name: "Количество теплоты", unit: "Дж", description: "Количество теплоты, полученное системой" },
+                        A: { name: "Работа", unit: "Дж", description: "Работа, совершённая системой" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'ΔU') return vars.Q - vars.A;
+                        if (unknown === 'Q') return vars.ΔU + vars.A;
+                        if (unknown === 'A') return vars.Q - vars.ΔU;
+                        return null;
+                    },
+                    explanation: "Первое начало термодинамики: изменение внутренней энергии равно разности количества теплоты и работы."
+                },
+                
+                heat_capacity: {
+                    name: "Количество теплоты при нагревании",
+                    formula: "Q = c × m × ΔT",
+                    variations: ["Q = c × m × ΔT", "c = Q / (m × ΔT)", "m = Q / (c × ΔT)", "ΔT = Q / (c × m)"],
+                    variables: {
+                        Q: { name: "Количество теплоты", unit: "Дж", description: "Количество теплоты" },
+                        c: { name: "Удельная теплоёмкость", unit: "Дж/(кг·°C)", description: "Удельная теплоёмкость вещества" },
+                        m: { name: "Масса", unit: "кг", description: "Масса тела" },
+                        ΔT: { name: "Изменение температуры", unit: "°C", description: "Изменение температуры" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'Q') return vars.c * vars.m * vars.ΔT;
+                        if (unknown === 'c') return vars.Q / (vars.m * vars.ΔT);
+                        if (unknown === 'm') return vars.Q / (vars.c * vars.ΔT);
+                        if (unknown === 'ΔT') return vars.Q / (vars.c * vars.m);
+                        return null;
+                    },
+                    explanation: "Количество теплоты, необходимое для нагревания тела."
+                },
+                
+                heat_fusion: {
+                    name: "Количество теплоты при плавлении",
+                    formula: "Q = λ × m",
+                    variations: ["Q = λ × m", "λ = Q / m", "m = Q / λ"],
+                    variables: {
+                        Q: { name: "Количество теплоты", unit: "Дж", description: "Количество теплоты при фазовом переходе" },
+                        λ: { name: "Удельная теплота плавления", unit: "Дж/кг", description: "Удельная теплота плавления" },
+                        m: { name: "Масса", unit: "кг", description: "Масса вещества" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'Q') return vars.λ * vars.m;
+                        if (unknown === 'λ') return vars.Q / vars.m;
+                        if (unknown === 'm') return vars.Q / vars.λ;
+                        return null;
+                    },
+                    explanation: "Количество теплоты, необходимое для плавления вещества."
+                },
+                
+                efficiency: {
+                    name: "КПД тепловой машины",
+                    formula: "η = (Q₁ - Q₂) / Q₁",
+                    variations: ["η = (Q₁ - Q₂) / Q₁", "Q₂ = Q₁ × (1 - η)"],
+                    variables: {
+                        η: { name: "КПД", unit: "", description: "Коэффициент полезного действия" },
+                        Q1: { name: "Количество теплоты от нагревателя", unit: "Дж", description: "Теплота, полученная от нагревателя" },
+                        Q2: { name: "Количество теплоты холодильнику", unit: "Дж", description: "Теплота, отданная холодильнику" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'η') return (vars.Q1 - vars.Q2) / vars.Q1;
+                        if (unknown === 'Q2') return vars.Q1 * (1 - vars.η);
+                        return null;
+                    },
+                    explanation: "КПД тепловой машины (отношение полезной работы к полученной теплоте)."
+                },
+                
+                // ============ ЭЛЕКТРОДИНАМИКА ============
+                
+                // 1. Электростатика
+                coulomb_law: {
+                    name: "Закон Кулона",
+                    formula: "F = k × (|q₁ × q₂|) / r²",
+                    variations: ["F = k × (|q₁ × q₂|) / r²", "q₁ = (F × r²) / (k × q₂)", "r = √(k × q₁ × q₂ / F)"],
+                    variables: {
+                        F: { name: "Сила взаимодействия", unit: "Н", description: "Сила электростатического взаимодействия" },
+                        q1: { name: "Заряд 1", unit: "Кл", description: "Электрический заряд первого тела" },
+                        q2: { name: "Заряд 2", unit: "Кл", description: "Электрический заряд второго тела" },
+                        r: { name: "Расстояние", unit: "м", description: "Расстояние между зарядами" },
+                        k: { name: "Электрическая постоянная", unit: "Н·м²/Кл²", description: "Коэффициент в законе Кулона", value: 9e9 }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'F') return vars.k * Math.abs(vars.q1 * vars.q2) / (vars.r * vars.r);
+                        if (unknown === 'q1') return (vars.F * vars.r * vars.r) / (vars.k * Math.abs(vars.q2));
+                        if (unknown === 'r') return Math.sqrt(vars.k * Math.abs(vars.q1 * vars.q2) / vars.F);
+                        return null;
+                    },
+                    explanation: "Закон Кулона: сила взаимодействия двух точечных зарядов."
+                },
+                
+                electric_field_strength: {
+                    name: "Напряжённость электрического поля",
+                    formula: "E = F / q",
+                    variations: ["E = F / q", "F = E × q", "q = F / E"],
+                    variables: {
+                        E: { name: "Напряжённость", unit: "Н/Кл", description: "Напряжённость электрического поля" },
+                        F: { name: "Сила", unit: "Н", description: "Сила, действующая на заряд" },
+                        q: { name: "Заряд", unit: "Кл", description: "Пробный заряд" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'E') return vars.F / vars.q;
+                        if (unknown === 'F') return vars.E * vars.q;
+                        if (unknown === 'q') return vars.F / vars.E;
+                        return null;
+                    },
+                    explanation: "Напряжённость электрического поля."
+                },
+                
+                capacitor_energy: {
+                    name: "Энергия заряженного конденсатора",
+                    formula: "W = (C × U²) / 2",
+                    variations: ["W = (C × U²) / 2", "C = 2W / U²", "U = √(2W / C)"],
+                    variables: {
+                        W: { name: "Энергия", unit: "Дж", description: "Энергия заряженного конденсатора" },
+                        C: { name: "Электроёмкость", unit: "Ф", description: "Электроёмкость конденсатора" },
+                        U: { name: "Напряжение", unit: "В", description: "Напряжение на конденсаторе" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'W') return 0.5 * vars.C * vars.U * vars.U;
+                        if (unknown === 'C') return (2 * vars.W) / (vars.U * vars.U);
+                        if (unknown === 'U') return Math.sqrt((2 * vars.W) / vars.C);
+                        return null;
+                    },
+                    explanation: "Энергия заряженного конденсатора."
+                },
+                
+                // 2. Постоянный ток
+                ohm_law: {
+                    name: "Закон Ома для участка цепи",
+                    formula: "I = U / R",
+                    variations: ["I = U / R", "U = I × R", "R = U / I"],
+                    variables: {
+                        I: { name: "Сила тока", unit: "А", description: "Сила тока на участке цепи" },
+                        U: { name: "Напряжение", unit: "В", description: "Напряжение на участке цепи" },
+                        R: { name: "Сопротивление", unit: "Ом", description: "Сопротивление участка цепи" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'I') return vars.U / vars.R;
+                        if (unknown === 'U') return vars.I * vars.R;
+                        if (unknown === 'R') return vars.U / vars.I;
+                        return null;
+                    },
+                    explanation: "Закон Ома для участка цепи."
+                },
+                
+                resistance: {
+                    name: "Сопротивление проводника",
+                    formula: "R = ρ × l / S",
+                    variations: ["R = ρ × l / S", "ρ = R × S / l", "l = R × S / ρ", "S = ρ × l / R"],
+                    variables: {
+                        R: { name: "Сопротивление", unit: "Ом", description: "Сопротивление проводника" },
+                        ρ: { name: "Удельное сопротивление", unit: "Ом·м", description: "Удельное сопротивление материала" },
+                        l: { name: "Длина", unit: "м", description: "Длина проводника" },
+                        S: { name: "Площадь сечения", unit: "м²", description: "Площадь поперечного сечения проводника" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'R') return vars.ρ * vars.l / vars.S;
+                        if (unknown === 'ρ') return vars.R * vars.S / vars.l;
+                        if (unknown === 'l') return vars.R * vars.S / vars.ρ;
+                        if (unknown === 'S') return vars.ρ * vars.l / vars.R;
+                        return null;
+                    },
+                    explanation: "Сопротивление однородного проводника постоянного сечения."
+                },
+                
+                series_resistance: {
+                    name: "Последовательное соединение резисторов",
+                    formula: "R = R₁ + R₂",
+                    variations: ["R = R₁ + R₂", "R₁ = R - R₂", "R₂ = R - R₁"],
+                    variables: {
+                        R: { name: "Общее сопротивление", unit: "Ом", description: "Общее сопротивление цепи" },
+                        R1: { name: "Сопротивление 1", unit: "Ом", description: "Сопротивление первого резистора" },
+                        R2: { name: "Сопротивление 2", unit: "Ом", description: "Сопротивление второго резистора" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'R') return vars.R1 + vars.R2;
+                        if (unknown === 'R1') return vars.R - vars.R2;
+                        if (unknown === 'R2') return vars.R - vars.R1;
+                        return null;
+                    },
+                    explanation: "Общее сопротивление при последовательном соединении резисторов."
+                },
+                
+                parallel_resistance: {
+                    name: "Параллельное соединение резисторов",
+                    formula: "1/R = 1/R₁ + 1/R₂",
+                    variations: ["1/R = 1/R₁ + 1/R₂", "R = 1/(1/R₁ + 1/R₂)"],
+                    variables: {
+                        R: { name: "Общее сопротивление", unit: "Ом", description: "Общее сопротивление цепи" },
+                        R1: { name: "Сопротивление 1", unit: "Ом", description: "Сопротивление первого резистора" },
+                        R2: { name: "Сопротивление 2", unit: "Ом", description: "Сопротивление второго резистора" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'R') return 1 / (1/vars.R1 + 1/vars.R2);
+                        return null;
+                    },
+                    explanation: "Общее сопротивление при параллельном соединении резисторов."
+                },
+                
+                current_power: {
+                    name: "Мощность тока",
+                    formula: "P = U × I",
+                    variations: ["P = U × I", "U = P / I", "I = P / U"],
+                    variables: {
+                        P: { name: "Мощность", unit: "Вт", description: "Мощность электрического тока" },
+                        U: { name: "Напряжение", unit: "В", description: "Напряжение на участке цепи" },
+                        I: { name: "Сила тока", unit: "А", description: "Сила тока на участке цепи" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'P') return vars.U * vars.I;
+                        if (unknown === 'U') return vars.P / vars.I;
+                        if (unknown === 'I') return vars.P / vars.U;
+                        return null;
+                    },
+                    explanation: "Мощность электрического тока на участке цепи."
+                },
+                
+                joule_lenz: {
+                    name: "Закон Джоуля-Ленца",
+                    formula: "Q = I² × R × t",
+                    variations: ["Q = I² × R × t", "I = √(Q / (R × t))", "R = Q / (I² × t)", "t = Q / (I² × R)"],
+                    variables: {
+                        Q: { name: "Количество теплоты", unit: "Дж", description: "Количество выделившейся теплоты" },
+                        I: { name: "Сила тока", unit: "А", description: "Сила тока в проводнике" },
+                        R: { name: "Сопротивление", unit: "Ом", description: "Сопротивление проводника" },
+                        t: { name: "Время", unit: "с", description: "Время протекания тока" }
+                    },
+                    calculate: function(vars, unknown) {
+                        if (unknown === 'Q') return vars.I * vars.I * vars.R * vars.t;
+                        if (unknown === 'I') return Math.sqrt(vars.Q / (vars.R * vars.t));
+                        if (unknown === 'R') return vars.Q / (vars.I * vars.I * vars.t);
+                        if (unknown === 't') return vars.Q / (vars.I * vars.I * vars.R);
+                        return null;
+                    },
+                    explanation: "Закон Джоуля-Ленца: количество теплоты, выделяющееся в проводнике с током."
+                }
+            };
+
+            // Элементы DOM
+            const formulaSelect = document.getElementById('formula-select');
+            const inputFields = document.getElementById('input-fields');
+            const unknownField = document.getElementById('unknown-field');
+            const unknownOptions = document.getElementById('unknown-options');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const resultDiv = document.getElementById('result');
+            const formulaDisplay = document.getElementById('formula-display');
+            const formulaVariations = document.getElementById('formula-variations');
+            const formulaExplanation = document.getElementById('formula-explanation');
+            const examplesContainer = document.getElementById('examples-container');
+            const sectionTabs = document.querySelectorAll('.section-tab');
+            const sectionCards = document.querySelectorAll('.section-card');
+
+            let selectedUnknown = null;
+            let currentSection = 'mechanics';
+
+            // Формулы по разделам (теперь полный набор)
+            const sections = {
+                mechanics: [
+                    'uniform_motion', 'velocity_accelerated', 'path_accelerated',
+                    'newton2', 'friction_force', 'hooke_law',
+                    'kinetic_energy', 'potential_energy', 'spring_energy',
+                    'momentum', 'work', 'power'
+                ],
+                molecular: [
+                    'amount_substance', 'amount_from_mass',
+                    'mendeleev_clapeyron', 'boyle_marriott',
+                    'first_law_thermodynamics', 'heat_capacity', 
+                    'heat_fusion', 'efficiency'
+                ],
+                electrodynamics: [
+                    'coulomb_law', 'electric_field_strength', 'capacitor_energy',
+                    'ohm_law', 'resistance', 'series_resistance', 
+                    'parallel_resistance', 'current_power', 'joule_lenz'
+                ]
+            };
+
+            // Инициализация приложения
+            function initApp() {
+                console.log('Инициализация приложения...');
+                
+                // Настраиваем обработчики событий
+                setupEventListeners();
+                
+                // Загружаем начальный раздел
+                switchSection('mechanics');
+                
+                console.log('Приложение инициализировано! Всего формул:', Object.keys(formulas).length);
+                console.log('Механика:', sections.mechanics.length, 'формул');
+                console.log('Молекулярная физика:', sections.molecular.length, 'формул');
+                console.log('Электродинамика:', sections.electrodynamics.length, 'формул');
+            }
+
+            // Настройка всех обработчиков событий
+            function setupEventListeners() {
+                console.log('Настройка обработчиков событий...');
+                
+                // Обработчики для карточек разделов
+                sectionCards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        console.log('Клик по карточке:', this.dataset.section);
+                        // Убираем активный класс у всех карточек
+                        sectionCards.forEach(c => c.classList.remove('active'));
+                        // Добавляем активный класс текущей карточке
+                        this.classList.add('active');
+                        
+                        // Получаем выбранный раздел
+                        const section = this.getAttribute('data-section');
+                        
+                        // Активируем соответствующую вкладку
+                        sectionTabs.forEach(tab => {
+                            tab.classList.remove('active');
+                            if (tab.getAttribute('data-section') === section) {
+                                tab.classList.add('active');
+                            }
+                        });
+                        
+                        // Переключаем отображение формул
+                        switchSection(section);
+                    });
+                });
+
+                // Обработчики для переключения разделов (вкладки)
+                sectionTabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        console.log('Клик по вкладке:', this.dataset.section);
+                        // Убираем активный класс у всех вкладок и карточек
+                        sectionTabs.forEach(t => t.classList.remove('active'));
+                        sectionCards.forEach(c => c.classList.remove('active'));
+                        
+                        // Добавляем активный класс текущей вкладке
+                        this.classList.add('active');
+                        
+                        // Получаем выбранный раздел
+                        const section = this.getAttribute('data-section');
+                        
+                        // Активируем соответствующую карточку
+                        sectionCards.forEach(card => {
+                            if (card.getAttribute('data-section') === section) {
+                                card.classList.add('active');
+                            }
+                        });
+                        
+                        // Переключаем отображение формул
+                        switchSection(section);
+                    });
+                });
+
+                // Обработчик изменения выбранной формулы
+                formulaSelect.addEventListener('change', function() {
+                    const selectedFormula = this.value;
+                    console.log('Выбрана формула:', selectedFormula);
+                    
+                    if (selectedFormula && formulas[selectedFormula]) {
+                        displayFormula(selectedFormula);
+                        generateInputFields(selectedFormula);
+                        generateUnknownOptions(selectedFormula);
+                    } else {
+                        clearInputFields();
+                        clearFormulaDisplay();
+                        hideUnknownField();
+                    }
+                });
+
+                // Обработчик кнопки вычисления
+                calculateBtn.addEventListener('click', function() {
+                    console.log('Нажата кнопка "Вычислить"');
+                    calculate();
+                });
+
+                // Валидация ввода чисел
+                document.addEventListener('input', function(e) {
+                    if (e.target.type === 'number') {
+                        const value = parseFloat(e.target.value);
+                        if (e.target.value === '') {
+                            e.target.style.borderColor = '';
+                        } else if (isNaN(value)) {
+                            e.target.style.borderColor = 'red';
+                        } else if (value < 0) {
+                            e.target.style.borderColor = 'orange';
+                        } else {
+                            e.target.style.borderColor = 'green';
+                        }
+                    }
+                });
+            }
+
+            // Функция для переключения разделов
+            function switchSection(section) {
+                console.log('Переключаем на раздел:', section);
+                currentSection = section;
+                
+                // Обновляем выпадающий список формул
+                updateFormulaSelect(section);
+                
+                // Сбрасываем выбранную формулу
+                formulaSelect.value = '';
+                clearInputFields();
+                clearFormulaDisplay();
+                hideUnknownField();
+                updateExamples(section);
+            }
+
+            // Функция для обновления списка формул
+            function updateFormulaSelect(section) {
+                console.log('Обновляем список формул для раздела:', section);
+                formulaSelect.innerHTML = '<option value="">-- Выберите формулу --</option>';
+                
+                const sectionFormulas = sections[section];
+                sectionFormulas.forEach(formulaKey => {
+                    if (formulas[formulaKey]) {
+                        const option = document.createElement('option');
+                        option.value = formulaKey;
+                        option.textContent = formulas[formulaKey].name + " (" + formulas[formulaKey].formula + ")";
+                        formulaSelect.appendChild(option);
+                    }
+                });
+            }
+
+            // Функция для обновления примеров
+            function updateExamples(section) {
+                console.log('Обновляем примеры для раздела:', section);
+                examplesContainer.innerHTML = '';
+                const sectionFormulas = sections[section];
+                
+                sectionFormulas.forEach(formulaKey => {
+                    if (formulas[formulaKey]) {
+                        const exampleItem = document.createElement('div');
+                        exampleItem.className = 'example-item';
+                        exampleItem.setAttribute('data-formula', formulaKey);
+                        exampleItem.innerHTML = `<strong>${formulas[formulaKey].name}:</strong> ${formulas[formulaKey].explanation.substring(0, 80)}...`;
+                        
+                        exampleItem.addEventListener('click', function() {
+                            const formula = this.getAttribute('data-formula');
+                            console.log('Выбран пример:', formula);
+                            formulaSelect.value = formula;
+                            displayFormula(formula);
+                            generateInputFields(formula);
+                            generateUnknownOptions(formula);
+                        });
+                        
+                        examplesContainer.appendChild(exampleItem);
+                    }
+                });
+            }
+
+            // Функция для отображения формулы и её вариаций
+            function displayFormula(formulaKey) {
+                const formula = formulas[formulaKey];
+                formulaDisplay.textContent = formula.formula;
+                formulaExplanation.textContent = formula.explanation;
+                
+                // Показываем вариации формулы
+                formulaVariations.innerHTML = '<strong>Вариации формулы:</strong>';
+                formula.variations.forEach(variation => {
+                    const variationEl = document.createElement('div');
+                    variationEl.className = 'formula-variation';
+                    variationEl.textContent = variation;
+                    formulaVariations.appendChild(variationEl);
+                });
+            }
+
+            // Функция для очистки отображения формулы
+            function clearFormulaDisplay() {
+                formulaDisplay.textContent = "Формула будет отображена здесь";
+                formulaVariations.innerHTML = "";
+                formulaExplanation.textContent = "Объяснение формулы появится здесь";
+            }
+
+            // Функция для генерации полей ввода
+            function generateInputFields(formulaKey) {
+                const formula = formulas[formulaKey];
+                inputFields.innerHTML = '';
+                
+                for (const [key, variable] of Object.entries(formula.variables)) {
+                    const formGroup = document.createElement('div');
+                    formGroup.className = 'form-group';
+                    
+                    const label = document.createElement('label');
+                    label.textContent = `${variable.name} (${key})`;
+                    
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.id = `input-${key}`;
+                    input.placeholder = `Введите ${variable.name.toLowerCase()} в ${variable.unit}`;
+                    input.step = "any";
+                    
+                    // Если у переменной есть предустановленное значение
+                    if (variable.value !== undefined) {
+                        input.value = variable.value;
+                        input.readOnly = true;
+                        input.style.backgroundColor = '#f0f0f0';
+                    }
+                    
+                    formGroup.appendChild(label);
+                    formGroup.appendChild(input);
+                    inputFields.appendChild(formGroup);
+                }
+            }
+
+            // Функция для генерации опций выбора неизвестной переменной
+            function generateUnknownOptions(formulaKey) {
+                const formula = formulas[formulaKey];
+                unknownOptions.innerHTML = '';
+                selectedUnknown = null;
+                
+                for (const key of Object.keys(formula.variables)) {
+                    const checkboxGroup = document.createElement('div');
+                    checkboxGroup.className = 'checkbox-group';
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'radio';
+                    checkbox.name = 'unknown';
+                    checkbox.value = key;
+                    checkbox.id = `unknown-${key}`;
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = `unknown-${key}`;
+                    label.textContent = `${key} (${formula.variables[key].name})`;
+                    
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            selectedUnknown = this.value;
+                            console.log('Выбрана неизвестная переменная:', selectedUnknown);
+                        }
+                    });
+                    
+                    checkboxGroup.appendChild(checkbox);
+                    checkboxGroup.appendChild(label);
+                    unknownOptions.appendChild(checkboxGroup);
+                }
+                
+                unknownField.style.display = 'block';
+            }
+
+            // Функция для скрытия поля выбора неизвестной
+            function hideUnknownField() {
+                unknownField.style.display = 'none';
+            }
+
+            // Функция для очистки полей ввода
+            function clearInputFields() {
+                inputFields.innerHTML = '';
+            }
+
+            // Функция вычисления
+            function calculate() {
+                const selectedFormula = formulaSelect.value;
+                console.log('Вычисление для формулы:', selectedFormula);
+                
+                if (!selectedFormula || !formulas[selectedFormula]) {
+                    resultDiv.textContent = "Пожалуйста, выберите формулу";
+                    resultDiv.style.color = 'red';
+                    return;
+                }
+                
+                if (!selectedUnknown) {
+                    resultDiv.textContent = "Пожалуйста, выберите переменную для вычисления";
+                    resultDiv.style.color = 'red';
+                    return;
+                }
+                
+                const formula = formulas[selectedFormula];
+                const variables = formula.variables;
+                const varValues = {};
+                let filledCount = 0;
+                
+                // Собираем значения переменных
+                for (const key of Object.keys(variables)) {
+                    const input = document.getElementById(`input-${key}`);
+                    if (input && input.value && !isNaN(parseFloat(input.value))) {
+                        varValues[key] = parseFloat(input.value);
+                        filledCount++;
+                    } else if (key !== selectedUnknown) {
+                        resultDiv.textContent = `Пожалуйста, заполните поле для переменной ${key}`;
+                        resultDiv.style.color = 'red';
+                        return;
+                    }
+                }
+                
+                // Проверяем, что заполнены все поля кроме выбранной неизвестной
+                if (filledCount !== Object.keys(variables).length - 1) {
+                    resultDiv.textContent = "Пожалуйста, заполните все поля кроме выбранной неизвестной переменной";
+                    resultDiv.style.color = 'red';
+                    return;
+                }
+                
+                // Вычисляем неизвестную переменную
+                try {
+                    const result = formula.calculate(varValues, selectedUnknown);
+                    const variable = variables[selectedUnknown];
+                    
+                    if (result !== null && !isNaN(result)) {
+                        let formattedResult;
+                        if (Math.abs(result) < 0.001 || Math.abs(result) > 100000) {
+                            formattedResult = result.toExponential(4);
+                        } else {
+                            formattedResult = result.toFixed(4);
+                        }
+                        
+                        resultDiv.innerHTML = `
+                            <strong>Результат:</strong><br>
+                            ${selectedUnknown} = ${formattedResult} ${variable.unit}<br>
+                            <em>${variable.name}</em>
+                        `;
+                        resultDiv.style.color = '#1a2a6c';
+                    } else {
+                        resultDiv.textContent = "Ошибка при вычислении. Проверьте введенные данные.";
+                        resultDiv.style.color = 'red';
+                    }
+                    
+                } catch (error) {
+                    resultDiv.textContent = "Ошибка при вычислении. Проверьте введенные данные.";
+                    resultDiv.style.color = 'red';
+                    console.error(error);
+                }
+            }
+
+            // Запускаем приложение
+            initApp();
+        });
+    </script>
+</body>
+</html>
